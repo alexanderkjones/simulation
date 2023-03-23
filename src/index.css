@@ -1,13 +1,71 @@
-body {
+* {
+  padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.App {
+  background-color: #000;
+  height: 100vh;
+  overflow: hidden;
+  color: #fff;
+}
+
+.header {
+  display: flex;
+  justify-content: end;
+  padding: 15px 10px;
+  margin-bottom: 20px;
+  height: 10vh;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  height: 90vh;
+}
+
+.canvas-div {
+  flex: 3;
+  height: 86%;
+  border: 1px solid #fff;
+}
+.div-options {
+  flex: 0.5;
+}
+.div-att {
+  flex: 0.5;
+  display: flex;
+  justify-content: end;
+  padding-right: 10px;
+}
+
+.flex-canvas {
+  display: flex;
+  justify-content: space-around;
+  font-size: 13px;
+}
+.bttn {
+  padding: 5px 10px;
+  border: 1px solid #fff;
+  border-radius: 15px;
+}
+
+.canvas-faces {
+  display: flex;
+  justify-content: center;
+}
+
+.face-img {
+  height: 45px;
+  margin: 0 20px;
+  cursor: pointer;
+}
+
+.selected-imgs {
+  height: 50px;
 }
