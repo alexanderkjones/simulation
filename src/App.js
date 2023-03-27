@@ -1,4 +1,11 @@
-import { Suspense, useEffect, useRef, useState } from 'react';
+import {
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 import { products } from './Info/products';
 import { Canvas, useThree } from '@react-three/fiber';
 import Camera from './Components/Camera';
@@ -15,10 +22,16 @@ import {
   HemisphericLight,
   MeshBuilder,
 } from '@babylonjs/core';
+import { Engine, Scene, useClick, useHover } from 'react-babylonjs';
 import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders';
+import Model from './Components/Babylon/Model';
+import { useDispatch } from 'react-redux';
+import { changeFace } from './Context/redux';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-//1.Na menjanje stranice mesh se ne treba restartovati - subMeshes()
+//edit proizvoda je posebna stranica koja se pravi u html
 
 //Samo na klik mesha sa te strane se ubacuje decal
 //Gizmo za pomeranje decal
@@ -33,6 +46,8 @@ const subProdFilter = selectedObj[0].subProducts.filter((e) => {
 const subProd = subProdFilter[0];
 
 function App() {
+  const face = useSelector((state) => state.selected.face);
+
   const [product, setProductsInfo] = ProductInfoContext();
 
   const [files, setFiles] = useState([]);
@@ -50,6 +65,8 @@ function App() {
     x: 0,
     y: 0,
   });
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setProductsInfo({
@@ -79,88 +96,11 @@ function App() {
     });
   };
 
-  const onSceneReady = (scene) => {
-    var camera = new BABYLON.ArcRotateCamera(
-      'camera1',
-      Math.PI / 2,
-      Math.PI / 2,
-      100,
-      new BABYLON.Vector3(0, 0, 0),
-      scene
-    );
-
-    camera.setTarget(Vector3.Zero());
-
-    const canvas = scene.getEngine().getRenderingCanvas();
-
-    camera.attachControl(canvas, true);
-
-    const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
-
-    light.intensity = 0.7;
-
-    const marker = new BABYLON.TransformNode('marker');
-    // marker.scaling = new BABYLON.Vector3(0.001, 0.001, 0.001);
-    marker.position.y = -25;
-
-    let modelParent;
-    let modelMesh;
-
-    BABYLON.SceneLoader.ImportMesh(
-      '',
-      '/scenes/',
-      subProd.model,
-      scene,
-      function (meshes) {
-        modelParent = meshes[0];
-        modelParent.parent = marker;
-
-        modelMesh = meshes[res(meshes)];
-
-        var decalMaterial = new BABYLON.StandardMaterial('decalMat', scene);
-        decalMaterial.diffuseTexture = new BABYLON.Texture(
-          'logo512.png',
-          scene
-        );
-        decalMaterial.diffuseTexture.hasAlpha = true;
-        decalMaterial.zOffset = -2;
-        decalMaterial.backFaceCulling = false;
-
-        var onPointerDown = function (evt) {
-          if (evt.button !== 0) {
-            return;
-          }
-
-          var pickInfo = scene.pick(
-            scene.pointerX,
-            scene.pointerY,
-            function (mesh) {
-              return mesh === modelMesh;
-            }
-          );
-          if (pickInfo.hit) {
-            var decalSize = new BABYLON.Vector3(5, 5, 5);
-
-            var decalModel = BABYLON.MeshBuilder.CreateDecal(
-              'decalModel',
-              modelMesh,
-              {
-                position: pickInfo.pickedPoint,
-                normal: pickInfo.getNormal(true),
-                size: decalSize,
-              }
-            );
-            decalModel.material = decalMaterial;
-          }
-        };
-        canvas.addEventListener('pointerdown', onPointerDown, false);
-      }
-    );
-  };
-
   return (
     <div className='App'>
-      <header className='header'>Finished</header>
+      <header className='header'>
+        <Link to='/editor'>Editor</Link>
+      </header>
       <div className='flex'>
         <div className='div-options'>
           <div>
@@ -170,7 +110,6 @@ function App() {
               }}
               onChange={(e) => {
                 const { name } = e.target.files[0];
-
                 setFiles([...files, { id: imageIndex, name }]);
               }}
             >
@@ -218,7 +157,7 @@ function App() {
                   );
                 })}
               <div>
-                {placedDecals.map((e, index) => {
+                {/* {placedDecals.map((e, index) => {
                   const { x } = e.decalPoint;
                   const { y } = e.decalPoint;
                   const xPosition = x.toFixed(1);
@@ -335,7 +274,7 @@ function App() {
                       {/* <div>
                         <div>Rotation:</div>
                       </div> */}
-                      {selectedMesh.id === e.name && (
+                {/* {selectedMesh.id === e.name && (
                         <div
                           onClick={() => {
                             setMeshes(
@@ -350,10 +289,10 @@ function App() {
                         >
                           X
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      )} */}
+                {/* </div> */}
+                );
+                {/* })} */}
               </div>
             </div>
           </div>
@@ -363,13 +302,7 @@ function App() {
             <div>Slected Side: {product.selectedFace}</div>
             <div className='bttn'>Preview</div>
           </div>
-          <div>
-            <SceneComponent
-              antialias
-              onSceneReady={onSceneReady}
-              id='my-canvas'
-            />
-          </div>
+          <div>{/* <Model /> */}</div>
           {/* <Canvas shadows>
             <Suspense>
               <ambientLight intesity={0.5} />
@@ -396,14 +329,16 @@ function App() {
                 <img
                   onClick={() => {
                     const { x, y } = product.camera;
-                    setProductsInfo({
-                      ...product,
-                      selectedFace: e.faceName,
-                      camera: {
-                        x: e.camera.x,
-                        y: e.camera.y,
-                      },
-                    });
+                    // setProductsInfo({
+                    //   ...product,
+                    //   selectedFace: e.faceName,
+                    //   camera: {
+                    //     x: e.camera.x,
+                    //     y: e.camera.y,
+                    //   },
+                    // });
+
+                    dispatch(changeFace(e.faceName));
                   }}
                   key={index}
                   className='face-img'

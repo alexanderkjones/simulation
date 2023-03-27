@@ -7,7 +7,8 @@ export const products = [
     subProducts: [
       {
         id: 'S1677744811741',
-        model: 'whiteShirt.glb',
+        // model: 'whiteShirt.glb',
+        model: '../meshes/Shirts/whiteShirt.glb',
         modelsName: 'Majca',
         defaultModelName: 'Naziv default modela',
         category: 'Kojoj kategoriji pripada',

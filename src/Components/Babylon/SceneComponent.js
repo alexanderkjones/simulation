@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { Engine, Scene } from '@babylonjs/core';
 
-export default ({
+const SceneComponent = ({
   antialias,
   engineOptions,
   adaptToDeviceRatio,
@@ -62,3 +62,5 @@ export default ({
 
   return <canvas ref={reactCanvas} {...rest} />;
 };
+
+export default React.memo(SceneComponent);
