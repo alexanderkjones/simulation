@@ -67,11 +67,11 @@ class Model extends React.Component {
       '/scenes/',
       subProd.model,
       scene,
-      function (meshes) {
+      (meshes) => {
         modelParent = meshes[0];
         modelParent.parent = marker;
 
-        modelMesh = meshes[this.res.bind(meshes)];
+        modelMesh = meshes[this.res(meshes)];
         modelMesh = meshes[this.props.number]; //undefined
         // modelMesh = meshes[2];
 
@@ -84,18 +84,14 @@ class Model extends React.Component {
         decalMaterial.zOffset = -2;
         decalMaterial.backFaceCulling = false;
 
-        var onPointerDown = function (evt) {
+        var onPointerDown = (evt) => {
           if (evt.button !== 0) {
             return;
           }
 
-          var pickInfo = scene.pick(
-            scene.pointerX,
-            scene.pointerY,
-            function (mesh) {
-              return mesh === modelMesh;
-            }
-          );
+          var pickInfo = scene.pick(scene.pointerX, scene.pointerY, (mesh) => {
+            return mesh === modelMesh;
+          });
           if (pickInfo.hit) {
             var decalSize = new BABYLON.Vector3(5, 5, 5);
 
