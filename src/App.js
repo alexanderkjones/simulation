@@ -30,6 +30,7 @@ import { useDispatch } from 'react-redux';
 import { changeFace } from './Context/redux';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Parent from './Components/Babylon/Parent.js';
 
 //edit proizvoda je posebna stranica koja se pravi u html
 
@@ -89,13 +90,6 @@ function App() {
   const placedDecals = allMeshes.filter((e) => {
     return e.placedMesh == product.selectedFace;
   });
-
-  const res = (meshes) => {
-    return meshes.findIndex((e) => {
-      return e.name === product.selectedFace;
-    });
-  };
-
   return (
     <div className='App'>
       <header className='header'>
@@ -302,7 +296,10 @@ function App() {
             <div>Slected Side: {product.selectedFace}</div>
             <div className='bttn'>Preview</div>
           </div>
-          <div>{/* <Model /> */}</div>
+          <div>
+            {/* <Model /> */}
+            {/* <Parent /> */}
+          </div>
           {/* <Canvas shadows>
             <Suspense>
               <ambientLight intesity={0.5} />

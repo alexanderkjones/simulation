@@ -8,6 +8,7 @@ import Model from './Components/Babylon/Model';
 import { configureStore } from '@reduxjs/toolkit';
 import facesReducer from './Context/redux.js';
 import { Provider } from 'react-redux';
+import Parent from './Components/Babylon/Parent';
 
 export const store = configureStore({
   reducer: {
@@ -22,7 +23,8 @@ root.render(
       <Provider store={store}>
         <Routes>
           <Route path='/' element={<App />} />
-          <Route path='/editor' element={<Model number={2} />} />
+          {/* <Route path='/editor' element={<Model number={2} />} /> */}
+          <Route path='/editor' element={<Parent />} />
         </Routes>
       </Provider>
     </SelectedProduct>

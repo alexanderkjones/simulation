@@ -24,15 +24,9 @@ class Model extends React.Component {
     this.state = { face: 'front' };
   }
 
-  res(meshes) {
-    return meshes.findIndex((e) => {
-      return e.name === this.state.face;
-    });
-  }
-
   componentDidUpdate() {
     // console.log(this.props.number); //2
-    console.log(this.state.face);
+    // console.log(this.state.face);
   }
 
   onSceneReady(scene) {
@@ -71,9 +65,9 @@ class Model extends React.Component {
         modelParent = meshes[0];
         modelParent.parent = marker;
 
-        modelMesh = meshes[this.res(meshes)];
-        modelMesh = meshes[this.props.number]; //undefined
-        // modelMesh = meshes[2];
+        // modelMesh = meshes[this.res(meshes)];
+        // modelMesh = meshes[this.props.number]; //undefined
+        modelMesh = meshes[2];
 
         var decalMaterial = new BABYLON.StandardMaterial('decalMat', scene);
         decalMaterial.diffuseTexture = new BABYLON.Texture(
@@ -118,6 +112,7 @@ class Model extends React.Component {
         <SceneComponent
           antialias
           onSceneReady={this.onSceneReady}
+          state={this.state.face}
           id='my-canvas'
           style={{ width: '100%', height: '100%' }}
         />
